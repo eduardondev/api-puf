@@ -1,0 +1,51 @@
+{
+  "name": "puf-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": {
+    "name": "Eduardo Nunes",
+    "email": "eduardodznmb@gmail.com"
+  },
+  "scripts": {
+    "fix": "run-s \"fix:* {@}\" --",
+    "fix:lint": "eslint --fix --no-error-on-unmatched-pattern",
+    "fix:format": "prettier --write",
+    "format": "yarb fix:format 'src/**/*.(js|ts|md|json)'",
+    "lint": "yarn fix:lint src/**/*.{js|ts|md|json}'",
+    "dev": "nodemon --exec babel-node -- -r dotenv-safe/config -- src/index.js",
+    "prepare": "husky install"
+  },
+  "license": "MIT",
+  "private": true,
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "./src/**/*.{js,md,json}": [
+      "npm run fix"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.0",
+    "@babel/node": "^7.16.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@commitlint/cli": "^15.0.0",
+    "@commitlint/config-conventional": "^15.0.0",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.1.2",
+    "nodemon": "^2.0.15",
+    "prisma": "^3.6.0"
+  },
+  "dependencies": {
+    "@koa/router": "^10.1.1",
+    "@prisma/client": "^3.6.0",
+    "dotenv-safe": "^8.2.0",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0"
+  }
+}
