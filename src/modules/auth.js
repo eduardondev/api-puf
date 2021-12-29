@@ -1,8 +1,22 @@
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import { prisma } from '../data/index'
 
 export const _getUserLogin = async ctx => {
   try {
-    const { email, password } = ctx.request.body
+    const [type, credentials] = ctx.request.headers.authorization.split(' ')
+
+    if (type !== 'Basic') {
+      ctx.status = 400
+      ctx.body = {
+        error: 1,
+        message: 'Cannot authenticate',
+      }
+    }
+
+    const [email, password] = Buffer.from(credentials, 'base64')
+      .toString()
+      .split(':')
 
     if (!email || !password)
       return (ctx.body = {
@@ -10,13 +24,15 @@ export const _getUserLogin = async ctx => {
         message: 'Missing fields!',
       })
 
-    const verifyExists = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         email,
       },
     })
 
-    if (!verifyExists) {
+    const passwordEqual = await bcrypt.compare(password, user.password)
+
+    if (!user || !passwordEqual) {
       ctx.status = 404
       ctx.body = {
         error: 1,
@@ -25,7 +41,10 @@ export const _getUserLogin = async ctx => {
       return
     }
 
+    let token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET)
+
     ctx.body = {
+      token,
       error: 0,
       message: 'Logged!',
     }

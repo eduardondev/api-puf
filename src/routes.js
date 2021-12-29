@@ -12,6 +12,8 @@ router.get('/login', auth._getUserLogin)
 
 /* ----- USERS ----- */
 router.get('/users', users._getUsers)
+router.get('/user/:id', users._getUserById)
 router.post('/user/create', users._postUserCreate)
+router.delete('/user/delete/:id', users._deleteUser)
 
 /* ----- END USERS ----- */
